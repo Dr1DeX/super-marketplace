@@ -4,8 +4,8 @@ import inspect
 from pathlib import Path
 
 
-def get_all_models() -> None:
-    base_dir = Path(__file__).resolve().parent.parent / 'app'
+def get_all_models():
+    base_dir = Path(__file__).resolve().parent.parent.parent / 'app'
     unique_class = {}
 
     for root, dirs, files in os.walk(base_dir):
@@ -20,6 +20,7 @@ def get_all_models() -> None:
                             unique_class[name] = obj
 
     globals().update(unique_class)
+
 
 
 if __name__ == '__main__':
