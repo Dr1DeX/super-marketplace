@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     DB_USER: str = 'postgres'
     DB_PASSWORD: str = 'password'
     DB_NAME: str = 'market'
-    DB_DRIVER: str = 'postgres+asyncpg'
+    DB_DRIVER: str = 'postgresql+asyncpg'
 
     @property
     def db_url(self):
