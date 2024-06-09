@@ -22,6 +22,5 @@ def get_all_models():
     globals().update(unique_class)
 
 
-
 if __name__ == '__main__':
     get_all_models()
