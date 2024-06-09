@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     DB_PASSWORD: str = 'password'
     DB_NAME: str = 'market'
     DB_DRIVER: str = 'postgresql+asyncpg'
+    JWT_SECRET_KEY: str = 'mega-super-secret'
+    JWT_ENCODE_ALGORITHM: str = 'HS256'
 
     @property
     def db_url(self):
