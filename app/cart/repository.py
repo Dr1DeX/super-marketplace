@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.cart.models import CartItem
 from app.cart.schema import CartCreateSchema
+from app.products.models import Products
 
 
 @dataclass
@@ -21,9 +22,9 @@ class CartRepository:
             await session.execute(query)
             await session.commit()
 
-    async def get_cart(self, user_id: int) -> list[CartItem]:
-        query = select(CartItem).where(CartItem.user_id == user_id)
+    async def get_cart(self, user_id: int) -> list[Products]:
+        query = select(Products).join(CartItem, Products.id == CartItem.product_id).where(CartItem.user_id == user_id)
 
         async with self.db_session as session:
-            cart_items: list[CartItem] = (await session.execute(query)).scalars().all()
+            cart_items: list[Products] = (await session.execute(query)).scalars().all()
             return cart_items

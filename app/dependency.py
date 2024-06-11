@@ -2,6 +2,8 @@ from fastapi import Depends, security, Security, HTTPException
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.cart.checkout.repository import CheckoutRepository
+from app.cart.checkout.service import CheckoutService
 from app.cart.repository import CartRepository
 from app.cart.service import CartService
 from app.exception import TokenExpireExtension
@@ -75,10 +77,20 @@ async def get_cart_repository(
 
 
 async def get_cart_service(
-        cart_repository: CartRepository = Depends(get_cart_repository),
-        product_repository: ProductRepository = Depends(get_products_repository)
+        cart_repository: CartRepository = Depends(get_cart_repository)
 ) -> CartService:
     return CartService(
-        cart_repository=cart_repository,
-        product_repository=product_repository
+        cart_repository=cart_repository
     )
+
+
+async def get_checkout_repository(
+        db_session: AsyncSession = Depends(get_db_session)
+) -> CheckoutRepository:
+    return CheckoutRepository(db_session=db_session)
+
+
+async def get_checkout_service(
+        checkout_repository: CheckoutRepository = Depends(get_checkout_repository)
+) -> CheckoutService:
+    return CheckoutService(checkout_repository=checkout_repository)

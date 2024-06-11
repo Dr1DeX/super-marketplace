@@ -1,4 +1,4 @@
-from typing import Annotated, Union
+from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
@@ -30,4 +30,4 @@ async def get_cart_with_product_info(
         cart_service: Annotated[CartService, Depends(get_cart_service)],
         user_id: int = Depends(get_request_user_id)
 ):
-    return await cart_service.get_cart_with_product_info(user_id=user_id)
+    return await cart_service.get_cart(user_id=user_id)
