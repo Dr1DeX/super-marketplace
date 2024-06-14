@@ -79,9 +79,7 @@ async def get_cart_repository(
 async def get_cart_service(
         cart_repository: CartRepository = Depends(get_cart_repository)
 ) -> CartService:
-    return CartService(
-        cart_repository=cart_repository
-    )
+    return CartService(cart_repository=cart_repository)
 
 
 async def get_checkout_repository(

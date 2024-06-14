@@ -10,7 +10,13 @@ class Settings(BaseSettings):
     DB_DRIVER: str = 'postgresql+asyncpg'
     JWT_SECRET_KEY: str = 'mega-super-secret'
     JWT_ENCODE_ALGORITHM: str = 'HS256'
+    RABBITMQ_DEFAULT_USER: str = 'guest'
+    RABBITMQ_DEFAULT_PASS: str = 'guest'
 
     @property
     def db_url(self):
         return f'{self.DB_DRIVER}://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}'
+
+    @property
+    def rabbit_url(self):
+        return f'amqp://{self.RABBITMQ_DEFAULT_USER}:{self.RABBITMQ_DEFAULT_PASS}@rabbitmq:5672/'

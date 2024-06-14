@@ -2,7 +2,9 @@ from typing import Annotated
 
 from fastapi import APIRouter, status, Depends, HTTPException
 
-from app.dependency import get_product_service
+from app.cart.schema import CartSchema
+from app.cart.service import CartService
+from app.dependency import get_product_service, get_cart_service, get_request_user_id
 from app.exception import ProductNotFoundException, ProductByCategoryNameException
 from app.products.schema import ProductSchema, CategorySchema
 from app.products.service import ProductService
@@ -62,3 +64,18 @@ async def get_products_by_category_name(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=e.detail
         )
+
+
+@router.post(
+    '/add_product/{product_id}',
+    response_model=list[CartSchema]
+)
+async def add_product(
+        product_id: int,
+        cart_service: Annotated[CartService, Depends(get_cart_service)],
+        product_service: Annotated[ProductService, Depends(get_product_service)],
+        user_id: int = Depends(get_request_user_id)
+):
+    product = await product_service.add_product(product_id=product_id)
+    return await cart_service.add_cart(body=product, user_id=user_id)
+
