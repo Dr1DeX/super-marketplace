@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from app.exception import ProductNotFoundException, ProductByCategoryNameException
 from app.products.repository import ProductRepository
-from app.products.schema import ProductSchema, CategorySchema
+from app.products.schema import ProductSchema, CategorySchema,  ProductAddCartSchema
 
 
 @dataclass
@@ -35,3 +35,7 @@ class ProductService:
 
         products_schema = [ProductSchema.model_validate(product) for product in products]
         return products_schema
+
+    async def add_product(self, product_id) -> ProductAddCartSchema:
+        product = await self.product_repository.get_product(product_id=product_id)
+        return ProductAddCartSchema.model_validate(product)

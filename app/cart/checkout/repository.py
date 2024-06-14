@@ -1,35 +1,42 @@
 from dataclasses import dataclass
 
-from sqlalchemy import insert, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.cart.checkout.models import UserContactInfo
-from app.cart.checkout.schema import UserCreateContactInfoSchema
-from app.cart.models import CartItem
-from app.products.models import Products
+
+from app.cart.checkout.schema import CheckoutCreateSchema
+from app.cart.models import Cart
+
+import uuid
 
 
 @dataclass
 class CheckoutRepository:
     db_session: AsyncSession
 
-    async def create_order(self, body: UserCreateContactInfoSchema, user_id: int, product_id: int) -> int:
-        prd_id = select(CartItem.product_id).where(CartItem.product_id == product_id)
-        query = insert(UserContactInfo).values(
-            user_id=user_id,
-            product_id=prd_id,
-            **body.dict(exclude_none=True)
-        ).returning(UserContactInfo.id)
+    async def create_order(self, checkout_data: CheckoutCreateSchema, user_id: int) -> list[dict]:
+        cart_user = select(Cart).where(Cart.user_id == user_id)
 
         async with self.db_session as session:
-            order_id: int = (await session.execute(query)).scalar()
-            await session.commit()
-            await session.flush()
-            return order_id
+            items = (await session.execute(cart_user)).scalars().all()
+            products = []
 
-    async def get_order(self, order_id: int, user_id: int) -> UserContactInfo:
-        query = select(UserContactInfo).where(UserContactInfo.id == order_id).where(UserContactInfo.user_id == user_id)
+            for item in items:
+                product_data = {
+                    'id': item.id,
+                    'product_name': item.product_name,
+                    'quantity': item.quantity,
+                    'price': item.price,
+                    'user_id': item.user_id
+                }
+                products.append(product_data)
 
-        async with self.db_session as session:
-            order: UserContactInfo = (await session.execute(query)).scalar_one_or_none()
+            order = [{
+                'order_id': str(uuid.uuid4()),
+                'user_id': user_id,
+                'status': 'Created',
+                **checkout_data.dict(exclude_none=True),
+                'products': products
+            }]
+
             return order

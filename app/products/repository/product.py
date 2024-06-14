@@ -1,7 +1,10 @@
 from dataclasses import dataclass
+from typing import Dict, Optional, Union
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import InstrumentedAttribute
+from sqlalchemy.orm.base import _T_co
 
 from app.products.models import Products, Categories
 
@@ -34,3 +37,11 @@ class ProductRepository:
         async with self.db_session as session:
             products: list[Products] = (await session.execute(query)).scalars().all()
             return products
+
+    async def add_product(self, product_id: int) -> Products:
+        query = select(Products.product_name, Products.price).where(Products.id == product_id)
+
+        async with self.db_session as session:
+            product = (await session.execute(query)).scalar_one_or_none()
+            return product
+
