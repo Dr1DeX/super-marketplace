@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from app.cart.checkout.repository import CheckoutRepository
 from app.cart.checkout.schema import CheckoutSchema, CheckoutCreateSchema
-from app.cart.checkout.rabbitmq_worker import send_to_message
+from workers.utils.publisher_rq import send_to_message
 
 
 @dataclass

@@ -1,8 +1,9 @@
 import aio_pika
 import json
-from app.settings import Settings
 
-settings = Settings()
+from workers.workers_settings import WorkersSettings
+
+settings = WorkersSettings()
 
 
 async def send_to_message(exchange_name: str, routing_key: str, message_body):

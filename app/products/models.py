@@ -11,7 +11,7 @@ class Products(Base):
     product_name: Mapped[str]
     product_count: Mapped[int]
     category_id: Mapped[int] = mapped_column(ForeignKey('Categories.id'), nullable=False)
-    price: Mapped[int] = mapped_column(nullable=True)
+    product_price: Mapped[int] = mapped_column(nullable=True)
 
 
 class Categories(Base):
