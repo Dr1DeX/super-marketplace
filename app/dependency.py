@@ -8,8 +8,13 @@ from app.cart.repository import CartRepository
 from app.cart.service import CartService
 from app.exception import TokenExpireExtension
 from app.infrastructure.database import get_db_session
+from app.infrastructure.database.accessor import AsyncSessionFactory
+from app.orders.repository import OrdersRepository
+from app.orders.service import OrdersService
 from app.products.repository import ProductRepository
 from app.products.service import ProductService
+from app.sales.repository import SalesRepository
+from app.sales.service import SalesService
 from app.settings import Settings
 from app.users.auth.service import AuthService
 from app.users.user_profile.repository import UserRepository
@@ -92,3 +97,21 @@ async def get_checkout_service(
         checkout_repository: CheckoutRepository = Depends(get_checkout_repository)
 ) -> CheckoutService:
     return CheckoutService(checkout_repository=checkout_repository)
+
+
+async def get_sales_repository(
+        db_session: AsyncSession = Depends(get_db_session)
+) -> SalesRepository:
+    return SalesRepository(db_session=db_session)
+
+
+async def get_orders_repository(
+        db_session: AsyncSession = Depends(get_db_session)
+) -> OrdersRepository:
+    return OrdersRepository(db_session=db_session)
+
+
+async def get_orders_service(
+        orders_repository: OrdersRepository = Depends(get_orders_repository)
+) -> OrdersService:
+    return OrdersService(orders_repository=orders_repository)

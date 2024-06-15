@@ -7,6 +7,7 @@ class SalesOrderSchema(BaseModel):
     id: int | None = None
     order_id: str | None = None
     user_id: int
+    status: str | None = None
     country: str | None = None
     tel_num: str | None = None
     email: str | None = None
@@ -19,6 +20,7 @@ class SalesOrderSchema(BaseModel):
 class SalesOrderCreateSchema(BaseModel):
     order_id: str | None = None
     user_id: int
+    status: str | None = None
     country: str | None = None
     tel_num: str | None = None
     email: str | None = None

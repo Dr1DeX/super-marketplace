@@ -22,7 +22,7 @@ services:
     depends_on:
       - db
     ports:
-      - '8000:8000'
+      - '8001:8001'
     env_file:
       - .env.dev
     restart: always
@@ -44,13 +44,29 @@ services:
   sales-worker:
     build:
       context: .
-      dockerfile: workers/Dockerfile
+      dockerfile: ./workers/sales.Dockerfile
     depends_on:
       - rabbitmq
     restart: always
     env_file:
       - .env.dev
+    volumes:
+      - sale-worker_data:/var/lib/rabbitmq
+
+  orders-worker:
+    build:
+      context: .
+      dockerfile: ./workers/orders.Dockerfile
+    depends_on:
+      - rabbitmq
+    restart: always
+    env_file:
+      - .env.dev
+    volumes:
+      - order-worker_data:/var/lib/rabbitmq
 
 volumes:
   rabbit-data:
   market-data:
+  sale-worker_data:
+  order-worker_data:

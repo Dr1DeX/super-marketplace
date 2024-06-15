@@ -4,8 +4,8 @@ from pydantic import BaseModel
 class CartSchema(BaseModel):
     id: int | None = None
     product_name: str | None = None
-    quantity: int | None = None
-    price: int | None = None
+    product_quantity: int | None = None
+    product_price: int | None = None
     user_id: int
 
     class Config:
@@ -13,6 +13,6 @@ class CartSchema(BaseModel):
 
 
 class CartCreateSchema(BaseModel):
-    name: str | None = None
-    quantity: int | None = None
-    price: int | None = None
+    product_name: str | None = None
+    product_quantity: int | None = None
+    product_price: int | None = None

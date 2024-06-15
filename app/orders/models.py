@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import ForeignKey
 
@@ -11,7 +9,8 @@ class Orders(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
     user_id: Mapped[int] = mapped_column(ForeignKey('UserProfile.id'), nullable=False)
+    order_id: Mapped[str] = mapped_column(nullable=True)
     product_name: Mapped[str] = mapped_column(nullable=True)
-    product_quantity: Mapped[str] = mapped_column(nullable=True)
-    price: Mapped[int] = mapped_column(nullable=True)
+    product_quantity: Mapped[int] = mapped_column(nullable=True)
+    product_price: Mapped[int] = mapped_column(nullable=True)
     status: Mapped[str] = mapped_column(nullable=True)

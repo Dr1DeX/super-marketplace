@@ -25,8 +25,8 @@ class CheckoutRepository:
                 product_data = {
                     'id': item.id,
                     'product_name': item.product_name,
-                    'quantity': item.quantity,
-                    'price': item.price,
+                    'product_quantity': item.product_quantity,
+                    'product_price': item.product_price,
                     'user_id': item.user_id
                 }
                 products.append(product_data)

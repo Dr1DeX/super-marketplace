@@ -14,7 +14,7 @@ class CartRepository:
     async def add_cart(self, body: ProductAddCartSchema, user_id: int) -> None:
         query = insert(Cart).values(
             product_name=body.product_name,
-            price=body.price,
+            product_price=body.product_price,
             user_id=user_id
         )
 
