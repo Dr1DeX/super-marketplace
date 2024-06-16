@@ -1,11 +1,9 @@
 from dataclasses import dataclass
-from typing import Dict, Optional, Union
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import InstrumentedAttribute
-from sqlalchemy.orm.base import _T_co
 
+from app.exception import ProductNotFoundException, ProductOutOfStockException
 from app.products.models import Products, Categories
 
 
@@ -39,9 +37,22 @@ class ProductRepository:
             return products
 
     async def add_product(self, product_id: int) -> Products:
-        query = select(Products.product_name, Products.price).where(Products.id == product_id)
-
         async with self.db_session as session:
-            product = (await session.execute(query)).scalar_one_or_none()
-            return product
+            exist_product = (await session.execute(select(Products).where(Products.id == product_id)))
+            exist_product = exist_product.scalar_one_or_none()
+
+            if exist_product:
+                if exist_product.product_count > 0:
+                    query = (
+                        update(Products)
+                        .where(Products.id == product_id)
+                        .values(product_count=exist_product.product_count - 1)
+                    )
+                    await session.execute(query)
+                    await session.commit()
+                    return exist_product
+                else:
+                    raise ProductOutOfStockException
+            else:
+                raise ProductNotFoundException
 

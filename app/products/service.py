@@ -37,5 +37,5 @@ class ProductService:
         return products_schema
 
     async def add_product(self, product_id) -> ProductAddCartSchema:
-        product = await self.product_repository.get_product(product_id=product_id)
+        product = await self.product_repository.add_product(product_id=product_id)
         return ProductAddCartSchema.model_validate(product)

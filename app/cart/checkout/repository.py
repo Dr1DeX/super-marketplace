@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -30,6 +30,9 @@ class CheckoutRepository:
                     'user_id': item.user_id
                 }
                 products.append(product_data)
+
+            await session.execute(delete(Cart).where(Cart.user_id == user_id))
+            await session.commit()
 
             order = [{
                 'order_id': str(uuid.uuid4()),

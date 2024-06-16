@@ -19,3 +19,13 @@ class CartService:
         cart_items = await self.cart_repository.get_cart(user_id=user_id)
         cart_schema = [CartSchema.model_validate(item) for item in cart_items]
         return cart_schema
+
+    async def update_product_quantity(self, user_id: int, product_id: int, method: str) -> list[CartSchema]:
+        await self.cart_repository.update_quantity(
+            user_id=user_id,
+            product_id=product_id,
+            method=method
+        )
+        products = await self.cart_repository.get_cart(user_id=user_id)
+        cart_schema = [CartSchema.model_validate(item) for item in products]
+        return cart_schema

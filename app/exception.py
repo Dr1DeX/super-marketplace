@@ -20,3 +20,11 @@ class TokenExpireExtension(Exception):
 
 class TokenNotCorrectException(Exception):
     detail = 'Token is not correct'
+
+
+class ProductOutOfStockException(Exception):
+    detail = 'Sorry, product out of stock'
+
+
+class UpdateMethodNotFoundException(Exception):
+    detail = 'Method not found'
