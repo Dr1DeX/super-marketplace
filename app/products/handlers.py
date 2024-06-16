@@ -5,7 +5,7 @@ from fastapi import APIRouter, status, Depends, HTTPException
 from app.cart.schema import CartSchema
 from app.cart.service import CartService
 from app.dependency import get_product_service, get_cart_service, get_request_user_id
-from app.exception import ProductNotFoundException, ProductByCategoryNameException
+from app.exception import ProductNotFoundException, ProductByCategoryNameException, ProductOutOfStockException
 from app.products.schema import ProductSchema, CategorySchema
 from app.products.service import ProductService
 
@@ -76,6 +76,16 @@ async def add_product(
         product_service: Annotated[ProductService, Depends(get_product_service)],
         user_id: int = Depends(get_request_user_id)
 ):
-    product = await product_service.add_product(product_id=product_id)
+    try:
+        product = await product_service.add_product(product_id=product_id)
+    except ProductNotFoundException as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=e.detail
+        )
+    except ProductOutOfStockException as e:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=e.detail
+        )
     return await cart_service.add_cart(body=product, user_id=user_id)
-
