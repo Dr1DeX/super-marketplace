@@ -7,8 +7,9 @@ COPY pyproject.toml ./
 RUN pip install poetry
 RUN poetry install
 
-COPY . .
+COPY ../.. .
 
-ENV PYTHONPATH=/app
+ENV PYTHONPATH="${PYTHONPATH}:/app"
+
 
 CMD ["poetry", "run", "python", "workers/sales/sales_rabbitmq_worker.py"]

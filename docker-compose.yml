@@ -16,9 +16,8 @@ services:
       - '5432:5432'
 
   backend:
-    build:
-      context: .
-      dockerfile: ./app/Dockerfile
+    image: kerriganxd/market-backend:latest
+    hostname: market-backend
     depends_on:
       - db
     ports:
@@ -42,9 +41,8 @@ services:
       - rabbit-data:/var/lib/rabbitmq
 
   sales-worker:
-    build:
-      context: .
-      dockerfile: ./workers/sales.Dockerfile
+    image: kerriganxd/sales-stargazer:latest
+    hostname: sales-rq
     depends_on:
       - rabbitmq
     restart: always
@@ -54,9 +52,8 @@ services:
       - sale-worker_data:/var/lib/rabbitmq
 
   orders-worker:
-    build:
-      context: .
-      dockerfile: ./workers/orders.Dockerfile
+    image: kerriganxd/order-stargazer:latest
+    hostname: orders-rq
     depends_on:
       - rabbitmq
     restart: always
