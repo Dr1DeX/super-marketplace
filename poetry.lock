@@ -61,6 +61,38 @@ files = [
 ]
 
 [[package]]
+name = "ansible"
+version = "10.1.0"
+description = "Radically simple IT automation"
+optional = false
+python-versions = ">=3.10"
+files = [
+    {file = "ansible-10.1.0-py3-none-any.whl", hash = "sha256:05b761c4628a0fc216478a5e3c111613c61fd13280846fa84843a63c36c7b1b6"},
+    {file = "ansible-10.1.0.tar.gz", hash = "sha256:7d8c44557f570687306e19d0e3296ad230593cb12bda35dcfc9274a6063af22a"},
+]
+
+[package.dependencies]
+ansible-core = ">=2.17.1,<2.18.0"
+
+[[package]]
+name = "ansible-core"
+version = "2.17.1"
+description = "Radically simple IT automation"
+optional = false
+python-versions = ">=3.10"
+files = [
+    {file = "ansible_core-2.17.1-py3-none-any.whl", hash = "sha256:aaaccf6a9fe05968821a02079c5ec4c33a7fe5f02d9f5d94f7c3a69f71eab675"},
+    {file = "ansible_core-2.17.1.tar.gz", hash = "sha256:46449d71bbd17c3ce85fe379721d88d333fd23637b5c3798e83fae5fa38def00"},
+]
+
+[package.dependencies]
+cryptography = "*"
+jinja2 = ">=3.0.0"
+packaging = "*"
+PyYAML = ">=5.1"
+resolvelib = ">=0.5.3,<1.1.0"
+
+[[package]]
 name = "anyio"
 version = "4.4.0"
 description = "High level compatibility layer for multiple asynchronous event loop implementations"
@@ -881,6 +913,17 @@ files = [
 ]
 
 [[package]]
+name = "packaging"
+version = "24.1"
+description = "Core utilities for Python packages"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "packaging-24.1-py3-none-any.whl", hash = "sha256:5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124"},
+    {file = "packaging-24.1.tar.gz", hash = "sha256:026ed72c8ed3fcce5bf8950572258698927fd1dbda10a5e981cdf0ac37f4f002"},
+]
+
+[[package]]
 name = "pamqp"
 version = "3.3.0"
 description = "RabbitMQ Focused AMQP low-level library"
@@ -1287,6 +1330,23 @@ files = [
     {file = "PyYAML-6.0.1-cp39-cp39-win_amd64.whl", hash = "sha256:510c9deebc5c0225e8c96813043e62b680ba2f9c50a08d3724c7f28a747d1486"},
     {file = "PyYAML-6.0.1.tar.gz", hash = "sha256:bfdf460b1736c775f2ba9f6a92bca30bc2095067b8a9d77876d1fad6cc3b4a43"},
 ]
+
+[[package]]
+name = "resolvelib"
+version = "1.0.1"
+description = "Resolve abstract dependencies into concrete ones"
+optional = false
+python-versions = "*"
+files = [
+    {file = "resolvelib-1.0.1-py2.py3-none-any.whl", hash = "sha256:d2da45d1a8dfee81bdd591647783e340ef3bcb104b54c383f70d422ef5cc7dbf"},
+    {file = "resolvelib-1.0.1.tar.gz", hash = "sha256:04ce76cbd63fded2078ce224785da6ecd42b9564b1390793f64ddecbe997b309"},
+]
+
+[package.extras]
+examples = ["html5lib", "packaging", "pygraphviz", "requests"]
+lint = ["black", "flake8", "isort", "mypy", "types-requests"]
+release = ["build", "towncrier", "twine"]
+test = ["commentjson", "packaging", "pytest"]
 
 [[package]]
 name = "rich"
@@ -1915,4 +1975,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "5053b92de17947b9e902ca5ca61d75471cb7fc97ce6d52623992fec4e07ed32c"
+content-hash = "e5d1e5aa00520121fea2c43da32d34d7cf0c51c389bac4282e54bf9e25a151c0"

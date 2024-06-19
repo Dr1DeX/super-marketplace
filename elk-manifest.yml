@@ -1,0 +1,204 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose.exe convert -f elk.docker-compose.yml -o elk-manifest.yml
+    kompose.version: 1.31.2 (a92241f79)
+  labels:
+    io.kompose.service: elasticsearch
+  name: elasticsearch
+spec:
+  ports:
+      - port: 9200
+        targetPort: 9200
+  selector:
+    app: elasticsearch
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose.exe convert -f elk.docker-compose.yml -o elk-manifest.yml
+    kompose.version: 1.31.2 (a92241f79)
+  labels:
+    io.kompose.service: kibana
+  name: kibana
+spec:
+  type: NodePort
+  ports:
+    - port: 5601
+      targetPort: 5601
+      nodePort: 30001
+  selector:
+    app: kibana
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose.exe convert -f elk.docker-compose.yml -o elk-manifest.yml
+    kompose.version: 1.31.2 (a92241f79)
+  labels:
+    io.kompose.service: logstash
+  name: logstash
+spec:
+  ports:
+      - port: 5044
+        targetPort: 5044
+  selector:
+    app: logstash
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose.exe convert -f elk.docker-compose.yml -o elk-manifest.yml
+    kompose.version: 1.31.2 (a92241f79)
+  labels:
+    io.kompose.service: elasticsearch
+  name: elasticsearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: elasticsearch
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose.exe convert -f elk.docker-compose.yml -o elk-manifest.yml
+        kompose.version: 1.31.2 (a92241f79)
+      labels:
+        io.kompose.network/super-marketplace-elk: "true"
+        io.kompose.service: elasticsearch
+    spec:
+      containers:
+        - env:
+            - name: discovery.type
+              value: single-node
+          image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
+          name: elasticsearch
+          ports:
+            - containerPort: 9200
+              hostPort: 9200
+              protocol: TCP
+          resources: {}
+      restartPolicy: Always
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose.exe convert -f elk.docker-compose.yml -o elk-manifest.yml
+    kompose.version: 1.31.2 (a92241f79)
+  labels:
+    io.kompose.service: kibana
+  name: kibana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: kibana
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose.exe convert -f elk.docker-compose.yml -o elk-manifest.yml
+        kompose.version: 1.31.2 (a92241f79)
+      labels:
+        io.kompose.network/super-marketplace-elk: "true"
+        io.kompose.service: kibana
+    spec:
+      containers:
+        - env:
+            - name: ELASTICSEARCH_HOSTS
+              value: http://elasticsearch.default.svc.cluster.local:9200
+          image: docker.elastic.co/kibana/kibana:7.15.0
+          name: kibana
+          ports:
+            - containerPort: 5601
+              hostPort: 5601
+              protocol: TCP
+          resources: {}
+      restartPolicy: Always
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose.exe convert -f elk.docker-compose.yml -o elk-manifest.yml
+    kompose.version: 1.31.2 (a92241f79)
+  labels:
+    io.kompose.service: logstash
+  name: logstash
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: logstash
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose.exe convert -f elk.docker-compose.yml -o elk-manifest.yml
+        kompose.version: 1.31.2 (a92241f79)
+      labels:
+        io.kompose.network/super-marketplace-elk: "true"
+        io.kompose.service: logstash
+    spec:
+      containers:
+        - image: docker.elastic.co/logstash/logstash:7.15.0
+          name: logstash
+          ports:
+            - containerPort: 5044
+              hostPort: 5044
+              protocol: TCP
+          resources: {}
+          volumeMounts:
+            - mountPath: /usr/share/logstash/config/logstash.yml
+              name: logstash-claim0
+            - mountPath: /usr/share/logstash/pipeline
+              name: logstash-claim1
+      restartPolicy: Always
+      volumes:
+        - name: logstash-claim0
+          persistentVolumeClaim:
+            claimName: logstash-claim0
+        - name: logstash-claim1
+          persistentVolumeClaim:
+            claimName: logstash-claim1
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    io.kompose.service: logstash-claim0
+  name: logstash-claim0
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    io.kompose.service: logstash-claim1
+  name: logstash-claim1
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
