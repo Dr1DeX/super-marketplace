@@ -2,6 +2,28 @@
 ## Руководство по развертыванию приложения.
 ___
 
+## Как развернуть в кластере кубера?
+### 1) Создаем кластер `kind create cluster -n market`
+### 2) Накатываем ingress/deploy/service `nginx`, `elk` через релизы `helm`:
+```
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+helm install elasticsearch bitnami/elasticsearch
+helm install kibana bitnami/kibana
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+helm install nginx-ingress ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace
+```
+### 3) Чекаем стэйт подов внешнего load balancer   `kubectl get pods -n ingress-nginx`
+### 4) Чекаем подхватил ли он статик айпишник от провайдера `kubectl get svc -n ingress-nginx`
+### 5) Накатываем манифесты кибаны/эластика/бэкенда
+```
+kubectl apply -f kibana-ingress.yml
+kubectl apply -f dev-configmap.yml
+kubectl apply -f backend.ingress.yml
+kubectl apply -f elk-manifest.yml
+```
+____
 ## Как развернуть локально?
 ### 1) Клонируем репозиторий
 
