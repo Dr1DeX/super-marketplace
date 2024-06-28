@@ -8,4 +8,10 @@ update:
 	poetry update ${LIB}
 
 run:
-	poetry run uviicorn --host localhost --port 8000 --reload
+	poetry run uvicorn app.main:app --host localhost --port 8000 --reload --env-file ${ENV}
+
+migrate-create:
+	alembic revision --autogenerate -m ${MIGRATION}
+
+migrate-apply:
+	alembic upgrade head

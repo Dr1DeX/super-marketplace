@@ -1,0 +1,69 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:16.2-alpine
+    restart: always
+    shm_size: 128mb
+    hostname: market
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'password'
+      POSTGRES_DB: 'market'
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - market-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  backend:
+    image: kerriganxd/market-backend:latest
+    hostname: market-backend
+    depends_on:
+      - db
+    ports:
+      - '8001:8001'
+    env_file:
+      - .env.dev
+    restart: always
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: always
+    hostname: rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    environment:
+      RABBITMQ_DEFAULT_USER: 'user'
+      RABBITMQ_DEFAULT_PASS: 'password'
+
+    volumes:
+      - rabbit-data:/var/lib/rabbitmq
+
+  sales-worker:
+    image: kerriganxd/sales-stargazer:latest
+    hostname: sales-rq
+    depends_on:
+      - rabbitmq
+    restart: always
+    env_file:
+      - .env.dev
+    volumes:
+      - sale-worker_data:/var/lib/rabbitmq
+
+  orders-worker:
+    image: kerriganxd/order-stargazer:latest
+    hostname: orders-rq
+    depends_on:
+      - rabbitmq
+    restart: always
+    env_file:
+      - .env.dev
+    volumes:
+      - order-worker_data:/var/lib/rabbitmq
+
+volumes:
+  rabbit-data:
+  market-data:
+  sale-worker_data:
+  order-worker_data:
